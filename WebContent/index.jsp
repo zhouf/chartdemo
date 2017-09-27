@@ -13,7 +13,7 @@
 	<div id="main" style="width: 600px; height: 400px;"></div>
 	<div id="linechar" style="width: 600px; height: 400px;"></div>
 	<div id="pie" style="width: 600px; height: 600px;"></div>
-	<div id="char2" style="width: 300px; height: 300px;display:none"></div>
+	<div id="char2" style="width: 300px; height: 300px;"></div>
 	<script type="text/javascript">
 		// 基于准备好的dom，初始化echarts实例
 		var myChart = echarts.init(document.getElementById('main'));
