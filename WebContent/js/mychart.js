@@ -6,35 +6,29 @@
 function barChart(objid,title,dataurl) {
 	var myChart = echarts.init(document.getElementById(objid));
 
-	// 指定图表的配置项和数据
-	baroption={
-		title : {
-			text : title
-		},
-		xAxis : {
-			data : []
-		},
-		yAxis : {},
-		series : [ {
-			name : '',
-			type : 'bar',
-			label : {
-				normal : {
-					show : true,
-					formatter : '{c}'
-				}
-			},
-			data : []
-		} ]
-	};
-	myChart.setOption(baroption,true);
 	myChart.showLoading();
 
 	$.get(dataurl).done(function(data) {
 		myChart.hideLoading();
-		baroption.xAxis.data = data.categories;
-		baroption.series[0].data = data.data;
-		myChart.setOption(baroption,true);
+		myChart.setOption({
+			tooltip : {
+				trigger : 'axis'
+			},
+			legend : {
+				data : data.legend
+			},
+			xAxis : {
+				data : data.categories
+			},
+			yAxis : [ {
+				type : 'value',
+				name : '单位',
+				axisLabel : {
+					formatter : '{value}'
+				}
+			} ],
+			series : data.series
+		});
 	});
 
 }
