@@ -7,29 +7,52 @@ function barChart(objid,title,dataurl) {
 	var myChart = echarts.init(document.getElementById(objid));
 
 	myChart.showLoading();
-
-	$.get(dataurl).done(function(data) {
-		myChart.hideLoading();
-		myChart.setOption({
-			tooltip : {
-				trigger : 'axis'
-			},
-			legend : {
-				data : data.legend
-			},
-			xAxis : {
-				data : data.categories
-			},
-			yAxis : [ {
-				type : 'value',
-				name : '单位',
-				axisLabel : {
-					formatter : '{value}'
-				}
-			} ],
-			series : data.series
+	if(dataurl.toLowerCase().indexOf("select ")==0){
+		//如果是以select开头，则认为是查询语句
+		$.post("GetLineBarData",{sql:dataurl},function(data){
+			myChart.hideLoading();
+			console.info(data.categories);
+			console.info(data.data);
+			myChart.setOption({
+			    xAxis: {
+			        type: 'category',
+			        data: data.categories
+			    },
+			    yAxis: {
+			        type: 'value'
+			    },
+			    series: [{
+			        data: data.data,
+			        type: 'bar'
+			    }]
+			});
 		});
-	});
+	}else{
+		
+		$.get(dataurl).done(function(data) {
+			myChart.hideLoading();
+			myChart.setOption({
+				tooltip : {
+					trigger : 'axis'
+				},
+				legend : {
+					data : data.legend
+				},
+				xAxis : {
+					data : data.categories
+				},
+				yAxis : [ {
+					type : 'value',
+					name : '单位',
+					axisLabel : {
+						formatter : '{value}'
+					}
+				} ],
+				series : data.series
+			});
+		});
+	}
+
 
 }
 
@@ -71,12 +94,24 @@ function lineChart(objid,title,dataurl) {
 
 	lineChart.setOption(lineoption,true);
 	lineChart.showLoading();
-	$.get(dataurl).done(function(data) {
-		lineChart.hideLoading();
-		lineoption.xAxis.data = data.categories;
-		lineoption.series[0].data = data.data;
-		lineChart.setOption(lineoption, true);
-	});
+	
+	if(dataurl.toLowerCase().indexOf("select ")==0){
+		//如果是以select开头，则认为是查询语句
+		$.post("GetLineBarData",{sql:dataurl},function(data){
+			lineChart.hideLoading();
+			lineoption.xAxis.data = data.categories;
+			lineoption.series[0].data = data.data;
+			lineChart.setOption(lineoption, true);
+		});
+	}else{
+		$.get(dataurl).done(function(data) {
+			lineChart.hideLoading();
+			lineoption.xAxis.data = data.categories;
+			lineoption.series[0].data = data.data;
+			lineChart.setOption(lineoption, true);
+		});
+	}
+	
 }
 
 
